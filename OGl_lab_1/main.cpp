@@ -145,7 +145,5 @@ int main(int argc, char **argv)
     printf("It's a test app.");
 	glutMainLoop();
 	return 0;
-
-	//Солнце сделать аппроксимацией окружности
 }
 

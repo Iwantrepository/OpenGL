@@ -39,7 +39,7 @@ static GLfloat vert[] = {
                 700,500,
                 700,250,
 
-                250,250,    ///svetilo
+                250,250,    ///sun/moon
 
                 175,125,    ///dom
                 175,215,
@@ -162,7 +162,7 @@ void Reshape(int Width, int Height)
 
 void init()
 {
-   glClearColor(1.0, 1.0, 1.0, 1.0);
+	glClearColor(1.0, 1.0, 1.0, 1.0);
 }
 
 int main(int argc, char **argv)
@@ -174,17 +174,13 @@ int main(int argc, char **argv)
 	glutCreateWindow( "Main window" );
 
 	init();
-    glutDisplayFunc(display);
- 	glutReshapeFunc(Reshape);
- 	glutIdleFunc(myfoo);
+	glutDisplayFunc(display);
+	glutReshapeFunc(Reshape);
+	glutIdleFunc(myfoo);
 
- 	//glutKeyboardFunc(processNormalKeys);
-	//glutSpecialFunc(processSpecialKeys);
-
-    printf("Go\n");
+	printf("Go\n");
 	glutMainLoop();
 	return 0;
 
-	//Источник света на орбите в проволочной сфере
 }
 
