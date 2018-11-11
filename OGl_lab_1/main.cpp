@@ -5,6 +5,9 @@
 #include <dos.h>
 #include <ctime>
 #include <windows.h>
+#include <math.h>
+
+#define PI 3.14159265
 
 int tim = 100;
 /*
@@ -13,6 +16,17 @@ int tim = 100;
 */
 
 using namespace std;
+
+void drawSun(int x, int y, int siz, int ap)
+{
+    glBegin(GL_POLYGON);
+        for(int i=0; i<ap; i++)
+        {
+            double ang = PI*2/ap*i;
+            glVertex2d(siz * sin(ang) + x, siz * cos(ang) + y);
+        }
+    glEnd();
+}
 
 void display()
 {
@@ -52,11 +66,7 @@ void display()
     else
         glColor3f(1.0, 1.0, 1.0);
 
-    glEnable(GL_POINT_SMOOTH);
-    glPointSize(50);
-    glBegin(GL_POINTS);//svetilo
-		glVertex2i((tim>0)?700*tim/100:700*(tim+100)/100,375);
-	glEnd();
+	drawSun((tim>0)? 700*tim/100 : 700*(tim+100)/100, 375, 50, 128);
 
 
 	if(tim>0)
@@ -92,8 +102,8 @@ void myfoo()
     if(tim<-100)
         tim=100;
 
-    Sleep(5);
-    printf("%d\n", tim);
+    Sleep(25);
+    //printf("%d\n", tim);
 
     display();
 }
@@ -132,11 +142,10 @@ int main(int argc, char **argv)
  	glutReshapeFunc(Reshape);
  	glutIdleFunc(myfoo);
 
- 	//glutKeyboardFunc(processNormalKeys);
-	//glutSpecialFunc(processSpecialKeys);
-
     printf("It's a test app.");
 	glutMainLoop();
 	return 0;
+
+	//Солнце сделать аппроксимацией окружности
 }
 
