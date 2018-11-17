@@ -6,7 +6,9 @@
 bool light = true;
 
 GLfloat xRotated, yRotated, zRotated;
-GLfloat xR = 0, yR = 0.05, zR = 0;
+GLfloat xR = 0, yR = -0.05, zR = 0;
+GLfloat sphereRotate = 1, dSphereRotate = 0.1;
+GLint sphereMode = 1, i = 0;
 GLfloat o = 0;
 
 GLfloat pos[4] = {-2,0,-5.5,1};
@@ -19,6 +21,7 @@ void init(void)
     glEnable(GL_LIGHT0);
     glEnable(GL_COLOR_MATERIAL);
     glLightfv(GL_LIGHT0, GL_POSITION, pos);
+    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 }
 
 void Draw(void)
@@ -27,7 +30,9 @@ void Draw(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
-
+    glTranslatef(0,0,-10.5);
+    glRotatef(sphereRotate,0.0,1.0,0.0);
+    glLightfv(GL_LIGHT0, GL_POSITION, pos);
     glTranslatef(pos[0], pos[1], pos[2]);
 
     GLUquadricObj *quadObj;
@@ -53,7 +58,7 @@ void Draw(void)
     glVertex3f( 0+o, 0+o, 1+o);
 
     glColor3f(1.0,0.5,0.0);    // Color Orange
-    glNormal3f(1,-1,1);
+    glNormal3f(-1,1,-1);
     glVertex3f( 1+o, 0-o, 0+o);
     glVertex3f( 0+o,-1-o, 0+o);
     glVertex3f( 0+o, 0-o, 1+o);
@@ -65,14 +70,14 @@ void Draw(void)
     glVertex3f( 0-o, 0-o, 1+o);
 
     glColor3f(0.0,1.0,0.0);    // Color Green
-    glNormal3f(-1,1,1);
+    glNormal3f(1,-1,-1);
     glVertex3f(-1-o, 0+o, 0+o);
     glVertex3f( 0-o, 1+o, 0+o);
     glVertex3f( 0-o, 0+o, 1+o);
 
 
     glColor3f(0.0,0.9,0.9);    // Color Blue
-    glNormal3f(1,1,-1);
+    glNormal3f(-1,-1,1);
     glVertex3f( 1+o, 0+o, 0-o);
     glVertex3f( 0+o, 1+o, 0-o);
     glVertex3f( 0+o, 0+o,-1-o);
@@ -84,7 +89,7 @@ void Draw(void)
     glVertex3f( 0+o, 0-o,-1-o);
 
     glColor3f(0.8,0.0,0.8);    // Color purple
-    glNormal3f(-1,-1,-1);
+    glNormal3f(1,1,1);
     glVertex3f(-1-o, 0-o, 0-o);
     glVertex3f( 0-o,-1-o, 0-o);
     glVertex3f( 0-o, 0-o,-1-o);
@@ -107,6 +112,7 @@ void animation(void)
 {
     xRotated += xR;
     yRotated += yR;
+    sphereRotate += dSphereRotate*sphereMode;
     Draw();
 }
 
@@ -149,6 +155,26 @@ void glutNormalKeys(unsigned char key, int x, int y)
     case 'e':
         xRotated = 0;
         yRotated = 0;
+        break;
+    case 'z':
+        i++;
+        switch(i%4)
+        {
+        case 0:
+            sphereMode = 0;
+            break;
+        case 1:
+            sphereMode = 1;
+            break;
+        case 2:
+            sphereMode = 0;
+            break;
+        case 3:
+            sphereMode = -1;
+            break;
+        default:
+            break;
+        }
         break;
 
     case 32:
