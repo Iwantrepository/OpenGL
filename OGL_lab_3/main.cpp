@@ -12,67 +12,30 @@ GLfloat sphereRotate = 1, dSphereRotate = 0.1;
 GLint sphereMode = 0, i = 0;
 GLfloat o = 0;
 
-GLint textureMode = 2;
+GLint textureMode = 1;
 
 GLfloat pos[4] = {2,0,5.5,1};
 
 GLuint	texture[8];
 
-GLfloat alpha = 0.2;
-GLboolean alphaMode = false;
+char textureName[14] = "texture_1.bmp";
+
+GLfloat alpha = 1;
+GLboolean alphaMode = true;
 
 GLvoid LoadGLTextures()
 {
-	// Загрузка картинки
-	AUX_RGBImageRec *texture1;
-	texture1 = auxDIBImageLoad("texture_1.bmp");
-	glGenTextures(8, &texture[0]);
-	glBindTexture(GL_TEXTURE_2D, texture[0]);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture1->sizeX, texture1->sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, texture1->data);
+    AUX_RGBImageRec *texture1;
+    glGenTextures(8, &texture[0]);
 
-	texture1 = auxDIBImageLoad("texture_2.bmp");
-	glBindTexture(GL_TEXTURE_2D, texture[1]);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture1->sizeX, texture1->sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, texture1->data);
-
-	texture1 = auxDIBImageLoad("texture_3.bmp");
-	glBindTexture(GL_TEXTURE_2D, texture[2]);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture1->sizeX, texture1->sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, texture1->data);
-
-	texture1 = auxDIBImageLoad("texture_4.bmp");
-	glBindTexture(GL_TEXTURE_2D, texture[3]);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture1->sizeX, texture1->sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, texture1->data);
-
-	texture1 = auxDIBImageLoad("texture_5.bmp");
-	glBindTexture(GL_TEXTURE_2D, texture[4]);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture1->sizeX, texture1->sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, texture1->data);
-
-	texture1 = auxDIBImageLoad("texture_6.bmp");
-	glBindTexture(GL_TEXTURE_2D, texture[5]);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture1->sizeX, texture1->sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, texture1->data);
-
-	texture1 = auxDIBImageLoad("texture_7.bmp");
-	glBindTexture(GL_TEXTURE_2D, texture[6]);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture1->sizeX, texture1->sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, texture1->data);
-
-	texture1 = auxDIBImageLoad("texture_8.bmp");
-	glBindTexture(GL_TEXTURE_2D, texture[7]);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture1->sizeX, texture1->sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, texture1->data);
+    for(int i=0; i<8; i++){
+        textureName[8]='1'+i;
+        texture1 = auxDIBImageLoad(textureName);
+        glBindTexture(GL_TEXTURE_2D, texture[i]);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture1->sizeX, texture1->sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, texture1->data);
+    }
 }
 
 void init(void)
@@ -176,7 +139,7 @@ void Draw(void)
         break;
     case 1:
         glColor4f(1,1,1,alpha);
-        glBindTexture(GL_TEXTURE_2D, texture[0]);
+        glBindTexture(GL_TEXTURE_2D, texture[5]);
         glBegin(GL_TRIANGLES);
 
         glNormal3f(1,1,1);
@@ -303,7 +266,7 @@ void animation(void)
     sphereRotate += dSphereRotate*sphereMode;
     Draw();
 
-    for(int i=0; i<1000000; i++);
+    //for(int i=0; i<1000000; i++);
 }
 
 void glutNormalKeys(unsigned char key, int x, int y)
