@@ -4,6 +4,8 @@
 #include <GL\glaux.h>
 #include <stdio.h>
 
+#define NUM_OF_SHARDS 11
+
 bool light = true;
 
 GLfloat xRotated, yRotated, zRotated;
@@ -12,16 +14,44 @@ GLfloat sphereRotate = 1, dSphereRotate = 0.1;
 GLint sphereMode = 0, i = 0;
 GLfloat o = 0;
 
-GLint textureMode = 1;
-
+GLint textureMode = 3;
 GLfloat pos[4] = {2,0,5.5,1};
-
 GLuint	texture[8];
+
+GLfloat range = -5;
 
 char textureName[14] = "texture_1.bmp";
 
 GLfloat alpha = 1;
 GLboolean alphaMode = true;
+
+GLuint triangle;
+
+void DrawTriangle(GLfloat x, GLfloat y, GLfloat z, GLint p)
+{
+    glNormal3f(1,1,1);
+
+    for(int i = 0; i<p; i+=2)
+    {
+        glNormal3f(1,1,1);
+        glBegin(GL_POLYGON);
+
+        glVertex3f( x/p*i       ,y-y/p*i    ,0          );
+        glVertex3f( 0           ,y-y/p*i    ,z/p*i      );
+        glVertex3f( 0           ,y-y/p*(i+1),z/p*(i+1)  );
+        glVertex3f( x/p*(i+1)   ,y-y/p*(i+1),0          );
+        glEnd();
+    }
+
+}
+
+void CalculateList()
+{
+	triangle = glGenLists(1);
+	glNewList(triangle, GL_COMPILE);
+	DrawTriangle(1.0,1.0,1.0, NUM_OF_SHARDS);
+	glEndList();
+}
 
 GLvoid LoadGLTextures()
 {
@@ -52,6 +82,8 @@ void init(void)
     //glShadeModel(GL_SMOOTH);
     LoadGLTextures();
 
+    CalculateList();
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
@@ -62,7 +94,7 @@ void Draw(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
-    glTranslatef(0,0,-10.5);
+    glTranslatef(0,0,range);
     glRotatef(sphereRotate,0.0,1.0,0.0);
     glLightfv(GL_LIGHT0, GL_POSITION, pos);
     glTranslatef(pos[0], pos[1], pos[2]);
@@ -75,7 +107,7 @@ void Draw(void)
     gluSphere(quadObj, 0.5, 10, 10);
 
     glLoadIdentity();
-    glTranslatef(0,0,-10.5);
+    glTranslatef(0,0,range);
     glRotatef(xRotated,1.0,0.0,0.0);
     glRotatef(yRotated,0.0,1.0,0.0);
     glRotatef(zRotated,0.0,0.0,1.0);
@@ -251,6 +283,57 @@ void Draw(void)
         glTexCoord2f(0.5, 1);   glVertex3f( 0-o, 0+o,-1-o);
         glEnd();
         break;
+    case 3:
+        glTranslatef(o,o,o);
+        glColor4f(1.0,0.0,0.0,alpha);
+        glCallList(triangle);
+        glTranslatef(-o,-o,-o);
+        glRotatef(90,0.0,1.0,0.0);
+
+        glTranslatef(o,o,o);
+        glColor4f(1.0,0.5,0.0,alpha);
+        glCallList(triangle);
+        glTranslatef(-o,-o,-o);
+        glRotatef(90,0.0,1.0,0.0);
+
+        glTranslatef(o,o,o);
+        glColor4f(1.0,0.9,0.0,alpha);
+        glCallList(triangle);
+        glTranslatef(-o,-o,-o);
+        glRotatef(90,0.0,1.0,0.0);
+
+        glTranslatef(o,o,o);
+        glColor4f(0.0,1.0,0.0,alpha);
+        glCallList(triangle);
+        glTranslatef(-o,-o,-o);
+        glRotatef(90,0.0,1.0,0.0);
+
+            glRotatef(180,1.0,0.0,0.0);
+
+        glTranslatef(o,o,o);
+        glColor4f(0.0,0.9,0.9,alpha);    // Color Blue
+        glCallList(triangle);
+        glTranslatef(-o,-o,-o);
+        glRotatef(90,0.0,1.0,0.0);
+
+        glTranslatef(o,o,o);
+        glColor4f(0.0,0.0,1.0,alpha);    // Color darkBlue
+        glCallList(triangle);
+        glTranslatef(-o,-o,-o);
+        glRotatef(90,0.0,1.0,0.0);
+
+        glTranslatef(o,o,o);
+        glColor4f(0.8,0.0,0.8,alpha);    // Color purple
+        glCallList(triangle);
+        glTranslatef(-o,-o,-o);
+        glRotatef(90,0.0,1.0,0.0);
+
+        glTranslatef(o,o,o);
+        glColor4f(1.0,0.0,0.0,alpha);
+        glCallList(triangle);
+        glTranslatef(-o,-o,-o);
+
+        break;
     default:
         break;
     }
@@ -266,7 +349,7 @@ void animation(void)
     sphereRotate += dSphereRotate*sphereMode;
     Draw();
 
-    //for(int i=0; i<1000000; i++);
+    for(int i=0; i<1000000; i++);
 }
 
 void glutNormalKeys(unsigned char key, int x, int y)
@@ -282,8 +365,13 @@ void glutNormalKeys(unsigned char key, int x, int y)
     case '3':
         textureMode = 2;
         break;
+    case '4':
+        textureMode = 3;
+        break;
+///--------------------------
     case 27:
         exit(0);
+///--------------------------
     case 'p':
         o+=0.1;
         break;
@@ -293,7 +381,7 @@ void glutNormalKeys(unsigned char key, int x, int y)
     case 'i':
         o-=0.1;
         break;
-
+///--------------------------
     case 's':
         xR += 0.1;
         yR += 0.0;
@@ -310,6 +398,7 @@ void glutNormalKeys(unsigned char key, int x, int y)
         xR += 0.0;
         yR -= 0.1;
         break;
+///--------------------------
     case 'q':
         xR = 0;
         yR = 0;
@@ -318,6 +407,7 @@ void glutNormalKeys(unsigned char key, int x, int y)
         xRotated = 0;
         yRotated = 0;
         break;
+///--------------------------
     case 'x':
         if(alphaMode){
             alpha = 0.2;
@@ -327,6 +417,7 @@ void glutNormalKeys(unsigned char key, int x, int y)
             alphaMode = !alphaMode;
         }
         break;
+///--------------------------
     case 'z':
         i++;
         switch(i%4)
@@ -347,7 +438,7 @@ void glutNormalKeys(unsigned char key, int x, int y)
             break;
         }
         break;
-
+///--------------------------
     case 32:
         if(light){
             glDisable(GL_LIGHT0);
@@ -357,10 +448,31 @@ void glutNormalKeys(unsigned char key, int x, int y)
             light = !light;
             }
         break;
-
+///--------------------------
+    case 't':
+        range--;
+        break;
+    case 'y':
+        range=-5;
+        break;
+    case 'u':
+        range++;
+        break;
+///--------------------------
+    case 'r':
+        range = -5;
+        xR = 0;
+        yR = -0.1;
+        xRotated = 0;
+        yRotated = 0;
+        o = 0;
+        alpha = 1;
+        break;
+///--------------------------
     default:
         break;
     }
+///--------------------------
 }
 
 
@@ -390,8 +502,13 @@ int main(int argc, char** argv){
            "\n"
            "Space - light on\\off\n"
            "\n"
-           "1\\2\\3 - texture mode\n"
-           "X - alpha mode\n");
+           "1\\2\\3\\4 - texture mode\n"
+           "X - alpha mode\n"
+           "\n"
+           "T\\U - range\n"
+           "Y - reset range\n"
+           "\n"
+           "R - reset");
     LoadGLTextures();
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
@@ -401,7 +518,6 @@ int main(int argc, char** argv){
 
     glEnable(GL_DEPTH_TEST);
 
-    //Set functions
     glutDisplayFunc(Draw);
     glutReshapeFunc(reshape);
     glutIdleFunc(animation);
